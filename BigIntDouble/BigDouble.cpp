@@ -1,7 +1,5 @@
 #include "BigDouble.h"
 
-#include <iostream>
-
 BigDouble& BigDouble::operator=(const BigDouble& rhs) {
 	numerator = rhs.numerator;
 	denominator = rhs.denominator;
@@ -34,6 +32,11 @@ BigDouble::BigDouble(std::string str) {
 	}
 }
 
+BigDouble::BigDouble(BigInt num) {
+	numerator = num;
+	denominator = "1";
+}
+
 BigDouble BigDouble::operator+(const BigDouble& rhs) {
 	BigDouble left = *this;
 	BigDouble right = rhs;
@@ -60,6 +63,11 @@ BigDouble& BigDouble::operator+=(const BigDouble& rhs) {
 	return *this;
 }
 
+BigDouble BigDouble::operator+(const long long& rhs) {
+	BigInt right(rhs);
+	return *this + right;
+}
+
 BigDouble BigDouble::operator-(const BigDouble& rhs) {
 	BigDouble left = *this;
 	BigDouble right = rhs;
@@ -84,6 +92,11 @@ BigDouble BigDouble::operator-(const BigDouble& rhs) {
 BigDouble& BigDouble::operator-=(const BigDouble& rhs) {
 	*this = *this - rhs;
 	return *this;
+}
+
+BigDouble BigDouble::operator-(const long long& rhs) {
+	BigInt right(rhs);
+	return *this - right;
 }
 
 BigDouble BigDouble::operator/(const BigDouble& rhs) {
@@ -135,23 +148,21 @@ BigDouble& BigDouble::operator*=(const BigDouble& rhs) {
 }
 
 BigDouble& BigDouble::operator++() {
-	BigDouble one("1");
-	return *this = *this + one;
+	return *this = *this + 1;
 }
-BigDouble& BigDouble::operator++(int) {
-	BigDouble one("1");
-	*this = *this + one;
-	return *this = *this - one;
+
+BigDouble BigDouble::operator++(int) {
+	*this = *this + 1;
+	return *this = *this - 1;
 }
 
 BigDouble& BigDouble::operator --() {
-	BigDouble one("1");
-	return *this = *this - one;
+	return *this = *this - 1;
 }
-BigDouble& BigDouble::operator --(int) {
-	BigDouble one("1");
-	*this = *this - one;
-	return *this = *this + one;
+
+BigDouble BigDouble::operator --(int) {
+	*this = *this - 1;
+	return *this = *this + 1;
 }
 
 bool BigDouble::operator<=(const BigDouble& rhs) const {
@@ -201,6 +212,10 @@ std::ostream& operator<<(std::ostream& out, const BigDouble& rhs) {
 	BigDouble result = rhs;
 	if (result.numerator.is_negative) out << '-';
 	
+	while (result.numerator.digits.size() != 1 && result.numerator.digits.back() == 0) {
+		result.numerator.digits.pop_back();
+	}
+
 	for (int i = result.numerator.digits.size() - 1; i >= 0; --i) {
 		out << result.numerator.digits[i];
 	}
@@ -208,6 +223,11 @@ std::ostream& operator<<(std::ostream& out, const BigDouble& rhs) {
 	
 	if (result.denominator != 1) {
 		out << " / ";
+
+		while (result.denominator.digits.size() != 1 && result.denominator.digits.back() == 0) {
+			result.denominator.digits.pop_back();
+		}
+
 		for (int i = result.denominator.digits.size() - 1; i >= 0; --i) {
 			out << result.denominator.digits[i];
 		}

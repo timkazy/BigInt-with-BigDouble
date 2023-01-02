@@ -26,8 +26,8 @@ BigInt::BigInt(std::string num) {
 	}
 }
 
-BigInt BigInt::operator+(const BigInt& rhs) {
-	BigInt left = *this;
+BigInt operator+(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right = rhs;
 	int carry = 0;
 
@@ -42,9 +42,9 @@ BigInt BigInt::operator+(const BigInt& rhs) {
 		}
 	}
 
-	if (digits.size() < rhs.digits.size()) {
+	if (lhs.digits.size() < rhs.digits.size()) {
 		left = rhs;
-		right = *this;
+		right = lhs;
 	}
 
 	for (int i = 0; i < right.digits.size(); ++i) {
@@ -66,44 +66,23 @@ BigInt BigInt::operator+(const BigInt& rhs) {
 	return left;
 }
 
-BigInt& BigInt::operator+=(const BigInt& rhs) {
-	*this = *this + rhs;
-	return *this;
+BigInt& operator+=(BigInt& lhs, const BigInt& rhs) {
+	lhs = lhs + rhs;
+	return lhs;
 }
 
-BigInt BigInt::operator+(const long long& rhs) {
-	BigInt right(rhs);
-	return *this + right;
-}
 
-BigInt& BigInt::operator+=(const long long& rhs) {
-	*this = *this + rhs;
-	return *this;
-}
-
-BigInt BigInt::operator+(const std::string& rhs) {
-	BigInt right(rhs);
-	return *this + right;
-}
-
-BigInt& BigInt::operator+=(const std::string& rhs) {
-	*this = *this + rhs;
-	return *this;
-}
-
-BigInt BigInt::operator-(const BigInt& rhs) {
-	BigInt left = *this;
+BigInt operator-(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right = rhs;
-	BigInt result;
 
 	if (left.is_negative != right.is_negative) {
 		bool sign = left.is_negative;
 		left.is_negative = false;
 		right.is_negative = false;
-		result = left + right;
-		result.is_negative = sign;
-	}
-	else {
+		left = left + right;
+		left.is_negative = sign;
+	} else {
 		int carry = 0;
 		int s = 0;
 		bool neg = false;
@@ -125,44 +104,23 @@ BigInt BigInt::operator-(const BigInt& rhs) {
 				carry = 0;
 			left.digits[i] = s;
 		}
-		result = left;
-		result.is_negative = neg;
+		left.is_negative = neg;
 	}
-	while (result.digits.size() > 1 && result.digits.back() == 0)
-		result.digits.pop_back();
-	return result;
+	while (left.digits.size() > 1 && left.digits.back() == 0)
+		left.digits.pop_back();
+	return left;
 }
 
-BigInt& BigInt::operator-=(const BigInt& rhs) {
-	*this = (*this - rhs);
-	return *this;
+BigInt& operator-=(BigInt& lhs, const BigInt& rhs) {
+	lhs = (lhs - rhs);
+	return lhs;
 }
 
-BigInt BigInt::operator-(const long long& rhs) {
-	BigInt right(rhs);
-	return *this - right;
-}
-
-BigInt& BigInt::operator-=(const long long& rhs) {
-	*this = (*this - rhs);
-	return *this;
-}
-
-BigInt BigInt::operator-(const std::string& rhs) {
-	BigInt right(rhs);
-	return *this - right;
-}
-
-BigInt& BigInt::operator-=(const std::string& rhs) {
-	*this = (*this - rhs);
-	return *this;
-}
-
-BigInt BigInt::operator*(const BigInt& rhs) {
-	BigInt left = *this;
+BigInt operator*(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right = rhs;
 
-	if (*this == 0 || rhs == 0) return 0;
+	if (lhs == 0 || rhs == 0) return 0;
 
 	if (left.is_negative != right.is_negative) {
 		left.is_negative = true;
@@ -191,33 +149,13 @@ BigInt BigInt::operator*(const BigInt& rhs) {
 	return left;
 }
 
-BigInt& BigInt::operator*= (const BigInt& rhs) {
-	*this = *this * rhs;
-	return *this;
+BigInt& operator*= (BigInt& lhs, const BigInt& rhs) {
+	lhs = lhs * rhs;
+	return lhs;
 }
 
-BigInt BigInt::operator*(const long long& rhs) {
-	BigInt right(rhs);
-	return *this * right;
-}
-
-BigInt& BigInt::operator*= (const long long& rhs) {
-	*this = *this * rhs;
-	return *this;
-}
-
-BigInt BigInt::operator*(const std::string& rhs) {
-	BigInt right(rhs);
-	return *this * right;
-}
-
-BigInt& BigInt::operator*= (const std::string& rhs) {
-	*this = *this * rhs;
-	return *this;
-}
-
-BigInt BigInt::operator/(const BigInt& rhs) {
-	BigInt left = *this;
+BigInt operator/(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right = rhs;
 	std::string result;
 	if (right == 0) throw("ERROR");
@@ -239,33 +177,13 @@ BigInt BigInt::operator/(const BigInt& rhs) {
 	return res;
 }
 
-BigInt& BigInt::operator/=(const BigInt& rhs) {
-	*this = (*this / rhs);
-	return *this;
+BigInt& operator/=(BigInt& lhs, const BigInt& rhs) {
+	lhs = (lhs / rhs);
+	return lhs;
 }
 
-BigInt BigInt::operator/(const long long& rhs) {
-	BigInt right(rhs);
-	return (*this / right);
-}
-
-BigInt& BigInt::operator/=(const long long& rhs) {
-	*this = (*this / rhs);
-	return *this;
-}
-
-BigInt BigInt::operator/(const std::string& rhs) {
-	BigInt right(rhs);
-	return (*this / right);
-}
-
-BigInt& BigInt::operator/=(const std::string& rhs) {
-	*this = (*this / rhs);
-	return *this;
-}
-
-BigInt BigInt::operator%(const BigInt& rhs) {
-	BigInt left = *this;
+BigInt operator%(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right = rhs;
 	std::string result;
 	if (right == 0) throw("ERROR");
@@ -282,30 +200,11 @@ BigInt BigInt::operator%(const BigInt& rhs) {
 	return cur;
 }
 
-BigInt& BigInt::operator%=(const BigInt& rhs) {
-	*this = (*this % rhs);
-	return *this;
+BigInt& operator%=(BigInt& lhs, const BigInt& rhs) {
+	lhs = (lhs % rhs);
+	return lhs;
 }
 
-BigInt BigInt::operator%(const long long& rhs) {
-	BigInt right(rhs);
-	return (*this % right);
-}
-
-BigInt& BigInt::operator%=(const long long& rhs) {
-	*this = (*this % rhs);
-	return *this;
-}
-
-BigInt BigInt::operator%(const std::string& rhs) {
-	BigInt right(rhs);
-	return (*this % right);
-}
-
-BigInt& BigInt::operator%=(const std::string& rhs) {
-	*this = (*this % rhs);
-	return *this;
-}
 
 BigInt& BigInt::operator=(const BigInt& rhs) {
 	digits = rhs.digits;
@@ -329,7 +228,7 @@ BigInt& BigInt::operator=(const std::string& rhs) {
 BigInt& BigInt::operator++() {
 	return *this = *this + 1;
 }
-BigInt& BigInt::operator++(int) {
+BigInt BigInt::operator++(int) {
 	*this = *this + 1;
 	return *this = *this - 1;
 }
@@ -337,7 +236,7 @@ BigInt& BigInt::operator++(int) {
 BigInt& BigInt::operator --() {
 	return *this = *this - 1;
 }
-BigInt& BigInt::operator --(int) {
+BigInt BigInt::operator --(int) {
 	*this = *this - 1;
 	return *this = *this + 1;
 }
@@ -364,12 +263,12 @@ std::ostream& operator<<(std::ostream& out, const BigInt& rhs) {
 	return out;
 }
 
-bool BigInt::operator<=(const BigInt& rhs) const {
-	return !(*this > rhs);
+bool operator<=(const BigInt& lhs, const BigInt& rhs) {
+	return !(lhs > rhs);
 }
 
-bool BigInt::operator<(const BigInt& rhs) const {
-	BigInt left = *this;
+bool operator<(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right = rhs;
 	if (left.is_negative != right.is_negative) {
 		if (left.is_negative) {
@@ -402,12 +301,12 @@ bool BigInt::operator<(const BigInt& rhs) const {
 	}
 }
 
-bool BigInt::operator>=(const BigInt& rhs) const {
-	return !(*this < rhs);
+bool operator>=(const BigInt& lhs, const BigInt& rhs) {
+	return !(lhs < rhs);
 }
 
-bool BigInt::operator>(const BigInt& rhs) const {
-	BigInt left = *this;
+bool operator>(const BigInt& lhs, const BigInt& rhs) {
+	BigInt left = lhs;
 	BigInt right(rhs);
 	if (left.is_negative != right.is_negative) {
 		if (left.is_negative) {
@@ -440,66 +339,10 @@ bool BigInt::operator>(const BigInt& rhs) const {
 	}
 }
 
-bool BigInt::operator==(const BigInt& rhs) const {
-	return ((*this <= rhs) && (*this >= rhs));
+bool operator==(const BigInt& lhs, const BigInt& rhs) {
+	return ((lhs <= rhs) && (lhs >= rhs));
 }
 
-bool BigInt::operator!=(const BigInt& rhs) const {
-	return !(*this == rhs);
-}
-
-bool BigInt::operator<(const long long& rhs) const {
-	BigInt right(rhs);
-	return *this < right;
-}
-
-bool BigInt::operator<=(const long long& rhs) const {
-	return !(*this > rhs);
-}
-
-bool BigInt::operator>(const long long& rhs) const {
-	BigInt right(rhs);
-	return *this > right;
-}
-
-bool BigInt::operator>=(const long long& rhs) const {
-	return !(*this < rhs);
-}
-
-bool BigInt::operator==(const long long& rhs) const {
-	BigInt right(rhs);
-	return *this == right;
-}
-
-bool BigInt::operator!=(const long long& rhs) const {
-	BigInt right(rhs);
-	return !(*this == right);
-}
-
-bool BigInt::operator<(const std::string& rhs) const {
-	BigInt right(rhs);
-	return *this < right;
-}
-
-bool BigInt::operator<=(const std::string& rhs) const {
-	return !(*this > rhs);
-}
-
-bool BigInt::operator>(const std::string& rhs) const {
-	BigInt right(rhs);
-	return *this > right;
-}
-
-bool BigInt::operator>=(const std::string& rhs) const {
-	return !(*this < rhs);
-}
-
-bool BigInt::operator==(const std::string& rhs) const {
-	BigInt right(rhs);
-	return *this == right;
-}
-
-bool BigInt::operator!=(const std::string& rhs) const {
-	BigInt right(rhs);
-	return !(*this == right);
+bool operator!=(const BigInt& lhs, const BigInt& rhs) {
+	return !(lhs == rhs);
 }

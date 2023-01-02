@@ -1,20 +1,23 @@
 #pragma once
 #include "BigInt.h"
+#include <iostream>
 
 class BigDouble {
 public:
 	BigDouble(std::string str);
+	BigDouble(BigInt num);
 
 	BigDouble operator+(const BigDouble& rhs);
 	BigDouble& operator+=(const BigDouble& rhs);
-
+	BigDouble operator+(const long long& rhs);
 
 	BigDouble operator-(const BigDouble& rhs);
 	BigDouble& operator-=(const BigDouble& rhs);
+	BigDouble operator-(const long long& rhs);
 
 
 	BigDouble operator*(const BigDouble& rhs);
-	BigDouble& operator*= (const BigDouble& rhs);
+	BigDouble& operator*=(const BigDouble& rhs);
 
 
 	BigDouble operator/(const BigDouble& rhs);
@@ -25,9 +28,9 @@ public:
 	BigDouble& operator=(const std::string& rhs);
 
 	BigDouble& operator ++();
-	BigDouble& operator ++(int);
+	BigDouble operator ++(int);
 	BigDouble& operator --();
-	BigDouble& operator --(int);
+	BigDouble operator --(int);
 
 	bool operator<(const BigDouble& rhs) const;
 	bool operator<=(const BigDouble& rhs) const;

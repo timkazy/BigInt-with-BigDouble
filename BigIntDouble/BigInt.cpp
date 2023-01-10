@@ -229,16 +229,18 @@ BigInt& BigInt::operator++() {
 	return *this = *this + 1;
 }
 BigInt BigInt::operator++(int) {
+	BigInt temp = *this;
 	*this = *this + 1;
-	return *this = *this - 1;
+	return temp;
 }
 
 BigInt& BigInt::operator --() {
 	return *this = *this - 1;
 }
 BigInt BigInt::operator --(int) {
+	BigInt temp = *this;
 	*this = *this - 1;
-	return *this = *this + 1;
+	return temp;
 }
 
 std::istream& operator>>(std::istream& in, BigInt& rhs) {

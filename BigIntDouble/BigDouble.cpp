@@ -152,8 +152,9 @@ BigDouble& BigDouble::operator++() {
 }
 
 BigDouble BigDouble::operator++(int) {
+	BigDouble temp = *this;
 	*this = *this + 1;
-	return *this = *this - 1;
+	return temp;
 }
 
 BigDouble& BigDouble::operator --() {
@@ -161,8 +162,9 @@ BigDouble& BigDouble::operator --() {
 }
 
 BigDouble BigDouble::operator --(int) {
+	BigDouble temp = *this;
 	*this = *this - 1;
-	return *this = *this + 1;
+	return temp;
 }
 
 bool BigDouble::operator<=(const BigDouble& rhs) const {
